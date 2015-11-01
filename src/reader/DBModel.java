@@ -47,9 +47,22 @@ public class DBModel {
         return 0;
     }
 
-    public void insertWordFile(int wordId, int fileId) {
+    public void insertWordFile() {
+        String subQuery;
         String query = "INSERT INTO wordsfiles (wordId, fileId) VALUES (?, ?)";
         try {
+            subQuery = "SELECT MAX(wordId) FROM words;";
+            ps = connection.prepareStatement(subQuery);
+            ResultSet wID = ps.executeQuery();
+            wID.next();
+            int wordId = wID.getInt(1);
+            
+            subQuery = "SELECT MAX(fileId) FROM files;";
+            ps = connection.prepareStatement(subQuery);
+            ResultSet fID = ps.executeQuery();
+            fID.next();
+            int fileId = fID.getInt(1);
+            
             ps = connection.prepareStatement(query);
             ps.setInt(1, wordId);
             ps.setInt(2, fileId);

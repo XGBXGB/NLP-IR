@@ -213,6 +213,7 @@ public class Stemmer {
 
 	public static String removePartialReduplicates12(String word)
 			throws Exception {
+            System.out.println("WORD: "+word);
 		String stemmedWord = word;
 		String consorep = "";
 		// Case 1
