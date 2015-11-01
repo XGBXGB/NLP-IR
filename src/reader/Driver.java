@@ -25,7 +25,6 @@ public class Driver {
 	}
 
 	private static boolean isStemmable(String word) {
-		//System.out.println(word);
 		if (word.length() >= 3 && isVowel(word.charAt(0))) {
 			return true;
 		}
@@ -38,17 +37,17 @@ public class Driver {
 	public static void main(String[] args) {
 		TextFileReader r = new TextFileReader();
 		//gawa kayo ng folder sa desktop maybe and put filipino texts and function words
-		ArrayList<TextFile> t = r.readFolder("..\\NLP-IR\\IR");
+		ArrayList<TextFile> t = r.readFolder("..\\NLP-IR2\\IR");
                 boolean canBeProper = false;
                 boolean isProper = false;
-		//DBModel db = new DBModel();
+		DBModel db = new DBModel();
 		
             
                 /** DB POPULATE MODULE **/
 		for (int i = 0; i < t.size(); i++) {
 			TextFile file = t.get(i);
-			//db.inserFile(file.getName());
-			//int fileId = db.getLastInsertedId();
+			db.inserFile(file.getName());
+			int fileId = db.getLastInsertedId();
 			String[] words = file.getWords();
 			//output = "";
 	        canBeProper = false;
@@ -122,9 +121,9 @@ public class Driver {
                              }
                              //System.out.println(word);
                              //output += word + " ";
-                            //db.insertWord(word);
-                            //int wordId = db.getLastInsertedId();
-                            //db.insertWordFile(fileId, wordId);
+                            db.insertWord(word);
+                            int wordId = db.getLastInsertedId();
+                            db.insertWordFile(fileId, wordId);
                             System.out.print(word + " ");
                         }
                     }

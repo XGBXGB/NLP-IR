@@ -16,79 +16,52 @@ public class DBModel {
 
     public DBModel() {
         connector = DBConnector.getInstance();
+        connection = connector.getConnection();
     }
 
     public void insertWord(String word) {
         String query = "INSERT INTO words (word) VALUES (?)";
-        connection = connector.getConnection();
         if (!wordExist(word)) {
             try {
                 ps = connection.prepareStatement(query);
-                ps.setString(2, word);
-                ps.executeUpdate();
+                ps.setString(1, word);
+                ps.execute();
             } catch (SQLException e) {
                 e.printStackTrace();
-            } finally {
-                try {
-                    if (connection != null) {
-                        connection.close();
-                    }
-                } catch (SQLException sqlee) {
-                    sqlee.printStackTrace();
-                }
             }
         }
     }
 
     public int getLastInsertedId() {
         String query = "SELECT LAST_INSERT_ID();";
-        connection = connector.getConnection();
         try {
             ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
-                return rs.getInt(0);
+                return rs.getInt(1);
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException sqlee) {
-                sqlee.printStackTrace();
-            }
-        }
+        } 
 
         return 0;
     }
 
     public void insertWordFile(int wordId, int fileId) {
         String query = "INSERT INTO wordsfiles (wordId, fileId) VALUES (?, ?)";
-        connection = connector.getConnection();
         try {
             ps = connection.prepareStatement(query);
             ps.setInt(1, wordId);
             ps.setInt(2, fileId);
-            ps.executeUpdate();
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException sqlee) {
-                sqlee.printStackTrace();
-            }
         }
 
     }
 
     public boolean wordExist(String word) {
         String query = "SELECT * FROM words WHERE word = ?";
-        connection = connector.getConnection();
         try {
             ps = connection.prepareStatement(query);
             ps.setString(1, word);
@@ -99,42 +72,24 @@ public class DBModel {
         } catch (SQLException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException sqlee) {
-                sqlee.printStackTrace();
-            }
-        }
-
+        } 
+        
         return false;
     }
 
     public void inserFile(String name) {
         String query = "INSERT INTO files (fileName) VALUES (?)";
-        connection = connector.getConnection();
         try {
             ps = connection.prepareStatement(query);
-            ps.setString(2, name);
-            ps.executeUpdate();
+            ps.setString(1, name);
+            ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException sqlee) {
-                sqlee.printStackTrace();
-            }
-        }
+        } 
     }
 
     //Gives the filenames that contain the set of search terms
     public Iterator searchDocs(String terms, String exclusions) {
-        connection = connector.getConnection();
         
         ArrayList<String> fileNames = new ArrayList();
         String[] words = terms.split(" ");
@@ -165,14 +120,6 @@ public class DBModel {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (connection != null) {
-                    connection.close();
-                }
-            } catch (SQLException sqlee) {
-                sqlee.printStackTrace();
-            }
         }
         return fileNames.iterator();
     }
