@@ -20,16 +20,51 @@ public class DBModel {
     }
 
     public void insertWord(String word) {
+        String subQuery = "SELECT * FROM words WHERE word = \""+word+"\";";
         String query = "INSERT INTO words (word) VALUES (?)";
         if (!wordExist(word)) {
             try {
-                ps = connection.prepareStatement(query);
-                ps.setString(1, word);
-                ps.execute();
+                ps = connection.prepareStatement(subQuery);
+                ResultSet rs = ps.executeQuery();
+                if(!rs.next()){
+                    ps = connection.prepareStatement(query);
+                    ps.setString(1, word);
+                    ps.execute();
+                }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
         }
+    }
+    
+    //Returns true if wordid and fileid is already in wordfiles table
+    public boolean checkWordFiles(String word) {
+        String query;
+        if (!wordExist(word)) {
+            try {
+                query = "SELECT wordId FROM words WHERE word = \""+word+"\";";
+                ps = connection.prepareStatement(query);
+                ResultSet rs = ps.executeQuery();
+                rs.next();
+                int wordId = rs.getInt(1);
+                
+                query = "SELECT MAX(fileId) FROM files";
+                ps = connection.prepareStatement(query);
+                rs = ps.executeQuery();
+                rs.next();
+                int fileId = rs.getInt(1);
+                
+                
+                query = "SELECT * FROM wordsfiles WHERE wordId = \""+wordId+"\" "
+                        + "AND fileId = \""+fileId+"\"";
+                ps = connection.prepareStatement(query);
+                rs = ps.executeQuery();
+                return rs.next();
+            } catch (SQLException e) {
+                e.printStackTrace();
+            }
+        }
+        return false;
     }
 
     public int getLastInsertedId() {
@@ -47,11 +82,11 @@ public class DBModel {
         return 0;
     }
 
-    public void insertWordFile() {
+    public void insertWordFile(String word) {
         String subQuery;
         String query = "INSERT INTO wordsfiles (wordId, fileId) VALUES (?, ?)";
         try {
-            subQuery = "SELECT MAX(wordId) FROM words;";
+            subQuery = "SELECT wordId FROM words WHERE word = \""+word+"\";";
             ps = connection.prepareStatement(subQuery);
             ResultSet wID = ps.executeQuery();
             wID.next();

@@ -123,7 +123,8 @@ public class Driver {
                     //output += word + " ";
                     db.insertWord(word);
                     //int wordId = db.getLastInsertedId();
-                    db.insertWordFile();
+                    if(!db.checkWordFiles(word))
+                        db.insertWordFile(word);
                     //System.out.print(word + " ");
                 }
             }
