@@ -39,10 +39,12 @@ public class Driver {
 		TextFileReader r = new TextFileReader();
 		//gawa kayo ng folder sa desktop maybe and put filipino texts and function words
 		ArrayList<TextFile> t = r.readFolder("..\\NLP-IR\\IR");
-        boolean canBeProper = false;
-        boolean isProper = false;
+                boolean canBeProper = false;
+                boolean isProper = false;
 		//DBModel db = new DBModel();
 		
+            
+                /** DB POPULATE MODULE **/
 		for (int i = 0; i < t.size(); i++) {
 			TextFile file = t.get(i);
 			//db.inserFile(file.getName());
@@ -128,6 +130,29 @@ public class Driver {
                     }
 			System.out.println();
 		}
+                /** DB POPULATE MODULE **/
+                
+                
+                /** SEARCH MODULE**/
+                /*
+                
+                System.out.println("Please input search terms separated by \" \" to match document contents:");
+                String input = sc.nextLine();
+                System.out.println("Would you like to exclude some terms? (Y/N)");
+                String exclusion = sc.nextLine();
+                if(exclusion.equalsIgnoreCase("y")){
+                    System.out.println("Please input terms to be excluded separated by \" \":");
+                    String excludedTerms = sc.nextLine();
+                }
+                Iterator docTitles = db.searchDocs(input, excludedTerms);
+                System.out.println("Matched documents:");
+                for(String title : docTitles){
+                    System.out.println("\""+title+"\"");
+                }
+                
+                */
+                /** SEARCH MODULE**/
+                
 	}
 
 	private static boolean isFunctionWord(String word) {

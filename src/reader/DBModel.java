@@ -133,10 +133,12 @@ public class DBModel {
     }
 
     //Gives the filenames that contain the set of search terms
-    public Iterator searchDocs(String terms) {
+    public Iterator searchDocs(String terms, String exclusions) {
         connection = connector.getConnection();
+        
         ArrayList<String> fileNames = new ArrayList();
         String[] words = terms.split(" ");
+        String[] excludedWords = exclusions.split(" ");
         String query = "SELECT fileName FROM files WHERE fileId IN ";
         query += "(Select wf.fileId FROM words w, wordsFiles wf "
                 + "WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId)\n";
@@ -147,6 +149,14 @@ public class DBModel {
                         + "WHERE w.word = \"" + words[i] + "\" AND w.wordId = wf.wordId);";
             }
         }
+        
+        if (excludedWords.length >= 1) {
+            for (int i = 1; i < words.length; i++) {
+                query += "AND id NOT IN (Select wf.fileId FROM words w, wordsFiles wf "
+                        + "WHERE w.word = \"" + excludedWords[i] + "\" AND w.wordId = wf.wordId);";
+            }
+        }
+        
         try {
             ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
