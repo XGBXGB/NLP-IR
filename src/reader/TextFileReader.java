@@ -13,7 +13,7 @@ public class TextFileReader {
 		ArrayList<String> fWords = new ArrayList<String>();
 		
 		try {
-			FileReader fr = new FileReader("C:\\Users\\Jake\\Desktop\\NLP\\fil-function-words.txt");
+			FileReader fr = new FileReader("..\\NLP-IR\\IR\\fil-function-words.txt");
 			BufferedReader br = new BufferedReader(fr);
 			String word = null;
 			while((word = br.readLine()) != null) {
