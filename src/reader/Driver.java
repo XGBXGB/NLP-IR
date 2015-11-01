@@ -39,7 +39,6 @@ public class Driver {
 		TextFileReader r = new TextFileReader();
 		//gawa kayo ng folder sa desktop maybe and put filipino texts and function words
 		ArrayList<TextFile> t = r.readFolder("..\\NLP-IR\\IR");
-		String input = "";//, output = "";
         boolean canBeProper = false;
         boolean isProper = false;
 		//DBModel db = new DBModel();
@@ -49,7 +48,6 @@ public class Driver {
 			//db.inserFile(file.getName());
 			//int fileId = db.getLastInsertedId();
 			String[] words = file.getWords();
-			input = "";
 			//output = "";
 	        canBeProper = false;
 	        isProper = false;
@@ -125,7 +123,6 @@ public class Driver {
                             //db.insertWord(word);
                             //int wordId = db.getLastInsertedId();
                             //db.insertWordFile(fileId, wordId);
-                        	input += (word + " ");
                             System.out.print(word + " ");
                         }
                     }
