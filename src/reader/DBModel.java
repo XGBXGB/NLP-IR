@@ -148,15 +148,17 @@ public class DBModel {
 
         if (words.length > 1) {
             for (int i = 1; i < words.length; i++) {
-                query += "AND id IN (Select wf.fileId FROM words w, wordsFiles wf "
+                query += "AND fileId IN (Select wf.fileId FROM words w, wordsFiles wf "
                         + "WHERE w.word = \"" + words[i] + "\" AND w.wordId = wf.wordId);";
             }
         }
         
         if (excludedWords.length >= 1) {
-            for (int i = 1; i < words.length; i++) {
-                query += "AND id NOT IN (Select wf.fileId FROM words w, wordsFiles wf "
+        	System.out.println("Went in excluded");
+            for (int i = 0; i < excludedWords.length; i++) {
+                query += "AND fileId NOT IN (Select wf.fileId FROM words w, wordsFiles wf "
                         + "WHERE w.word = \"" + excludedWords[i] + "\" AND w.wordId = wf.wordId);";
+
             }
         }
         

@@ -118,7 +118,7 @@ public class Main {
 	            }
 	            outputTerms += word + " ";
 	        }
-	        System.out.println("Output Terms " + outputTerms);
+	        //System.out.println("Output Terms " + outputTerms);
 	    
 	    /********** exclusions ******************/
 	    canBeProper = false;
@@ -167,10 +167,10 @@ public class Main {
             }
             outputExclusions += word + " ";
         }
-        System.out.println("Output Exclusions " + outputExclusions);
+        //System.out.println("Output Exclusions " + outputExclusions);
         
         Iterator<String> files = db.searchDocs(outputTerms, outputExclusions);
-        System.out.println("Files from query: ");
+        System.out.println("\n\nFiles from query: ");
         while(files.hasNext())
         {
         	String fileName = files.next();
