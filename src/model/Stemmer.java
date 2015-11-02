@@ -46,7 +46,7 @@ public class Stemmer {
 	}
 
 	private static boolean isStemmable(String word) {
-		System.out.println(word);
+		//System.out.println(word);
 		if (word.length() >= 4 && isVowel(word.charAt(0))) {
 			return true;
 		}
@@ -57,7 +57,7 @@ public class Stemmer {
 	}
         
         private static boolean isQualified(String word) {
-		System.out.println(word);
+		//System.out.println(word);
 		if (word.length() >= 3 && isVowel(word.charAt(0))) {
 			return true;
 		}
@@ -71,7 +71,7 @@ public class Stemmer {
 		String stemmedWord = word;
 		for (String prefix : PREFIXES) {
 			if (stemmedWord.startsWith(prefix)) {
-				System.out.println("PASOK");
+				//System.out.println("PASOK");
 				stemmedWord = stemmedWord.replaceFirst(prefix, "");
 				if (endsWithVowel(prefix) && stemmedWord.startsWith("r")
 						&& isVowel(stemmedWord.charAt(1))) {
@@ -144,7 +144,7 @@ public class Stemmer {
 			return stemmedWord;
 		}
 
-		System.out.println("INDEX" + stemmedWord.indexOf(infix));
+		//System.out.println("INDEX" + stemmedWord.indexOf(infix));
 		if (stemmedWord.indexOf(infix) < stemmedWord.length() / 2) {
 			stemmedWord = stemmedWord.replaceFirst(infix, "");
 		}
@@ -160,7 +160,7 @@ public class Stemmer {
 		String stemmedWord = word;
 		
                 if (isStemmable(stemmedWord)) {
-                    System.out.println("ENTERED");
+                    //System.out.println("ENTERED");
                     if(isVowel(stemmedWord.charAt(0)) && stemmedWord.length() == 5 && stemmedWord.endsWith("ng"))
                         stemmedWord = stemmedWord.replace("ng", "");
                     if(!isVowel(stemmedWord.charAt(0)) && stemmedWord.length() == 5 && stemmedWord.endsWith("ng"))
@@ -173,7 +173,7 @@ public class Stemmer {
                 }
                 
 		for (String suffix : SUFFIXES) {
-            System.out.println("SUFFIX SHIT: "+stemmedWord);
+            //System.out.println("SUFFIX: "+stemmedWord);
             if(stemmedWord.endsWith(suffix) && suffix.equals("ng") && isStemmable(stemmedWord))
 			{
 				if(isVowel(stemmedWord.charAt(stemmedWord.length()-4)) && isVowel(stemmedWord.charAt(stemmedWord.length()-3)))
@@ -213,7 +213,7 @@ public class Stemmer {
 
 	public static String removePartialReduplicates12(String word)
 			throws Exception {
-            System.out.println("WORD: "+word);
+            //System.out.println("WORD: "+word);
 		String stemmedWord = word;
 		String consorep = "";
 		// Case 1

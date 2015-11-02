@@ -5,7 +5,7 @@ import java.util.Scanner;
 
 import model.Stemmer;
 
-public class Driver {
+/*public class Driver {
 
     public static final char[] VOWELS = {'a', 'e', 'i', 'o', 'u'};
 
@@ -42,7 +42,7 @@ public class Driver {
 
         /**
          * DB POPULATE MODULE *
-         */
+         
         for (int i = 0; i < t.size(); i++) {
             TextFile file = t.get(i);
             db.inserFile(file.getName());
@@ -156,7 +156,7 @@ public class Driver {
          */
         /**
          * SEARCH MODULE*
-         */
+         
     }
 
     private static boolean isFunctionWord(String word) {
@@ -285,5 +285,5 @@ public class Driver {
      }
      }
      return false;
-     }*/
-}
+     }
+}*/
