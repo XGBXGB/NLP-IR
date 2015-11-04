@@ -8,6 +8,7 @@ import reader.TextFileReader;
 
 public class Controller {
 	public static final char[] VOWELS = {'a', 'e', 'i', 'o', 'u'};
+        final int NUMBER_OF_DOCUMENTS = 1074;//CHANGE TO NUMBER OF TAGALOG NEWS ONLY
 	private ArrayList<TextFile> files;
 	private DBModel dbModel;
 	private TextFileReader tfr;
@@ -157,8 +158,8 @@ public class Controller {
 					if(!isFunctionWord(word)) {
 						dbModel.insertWord(word);
 						if (!dbModel.checkWordFiles(word)) {
-							int tf = 0;//some method
-							int idf = 0;//some method again
+							int tf = (int)(1 + Math.log((double)w.getCount()));
+							int idf = (int) (Math.log(NUMBER_OF_DOCUMENTS/dbModel.getNumOfDocs(w.getWord())));
 							dbModel.insertWordFile(word, w.getCount(), tf, idf);
 						}
 					}

@@ -140,6 +140,22 @@ public class DBModel {
             e.printStackTrace();
         } 
     }
+    
+    public int getNumOfDocs(String word){
+        String query = "SELECT COUNT(*) FROM wordsFiles wf, words w WHERE w.word = \""+word+"\" AND wf.wordId = w.wordId";
+        try {
+            ps = connection.prepareStatement(query);
+            ps.setString(1, word);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        return 0;
+    }
 
     //Gives the filenames that contain the set of search terms
     public Iterator searchDocs(String terms, String exclusions) {
