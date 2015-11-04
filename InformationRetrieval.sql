@@ -73,6 +73,9 @@ DROP TABLE IF EXISTS `wordsfiles`;
 CREATE TABLE `wordsfiles` (
   `wordId` int(11) NOT NULL,
   `fileId` int(11) NOT NULL,
+  `wordCount` int(11) NOT NULL DEFAULT '1',
+  `termFreq` int(11) NOT NULL DEFAULT '1',
+  `inverseDocFreq` int(11) NOT NULL DEFAULT '1',
   KEY `wf wordId_idx` (`wordId`),
   KEY `wf fileId_idx` (`fileId`),
   CONSTRAINT `wf fileId` FOREIGN KEY (`fileId`) REFERENCES `files` (`fileId`) ON DELETE NO ACTION ON UPDATE NO ACTION,
@@ -98,4 +101,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2015-10-31 12:51:23
+-- Dump completed on 2015-11-04 21:32:31

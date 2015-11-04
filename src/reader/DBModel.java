@@ -84,9 +84,9 @@ public class DBModel {
         return 0;
     }
 
-    public void insertWordFile(String word) {
+    public void insertWordFile(String word, int count, int tf, int idf) {
         String subQuery;
-        String query = "INSERT INTO wordsfiles (wordId, fileId) VALUES (?, ?)";
+        String query = "INSERT INTO wordsfiles (wordId, fileId, wordCount, termFreq, inverseDocFreq) VALUES (?, ?, ?, ?, ?)";
         try {
             subQuery = "SELECT wordId FROM words WHERE word = \""+word+"\";";
             ps = connection.prepareStatement(subQuery);
@@ -103,6 +103,9 @@ public class DBModel {
             ps = connection.prepareStatement(query);
             ps.setInt(1, wordId);
             ps.setInt(2, fileId);
+            ps.setInt(3, count);
+            ps.setInt(4, tf);
+            ps.setInt(5, idf);
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -127,7 +130,7 @@ public class DBModel {
         return false;
     }
 
-    public void inserFile(String name) {
+    public void insertFile(String name) {
         String query = "INSERT INTO files (fileName) VALUES (?)";
         try {
             ps = connection.prepareStatement(query);

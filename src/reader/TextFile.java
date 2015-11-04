@@ -3,16 +3,19 @@ package reader;
 import java.util.ArrayList;
 import java.util.HashMap;
 
+import model.Word;
+
 public class TextFile {
 	private int fileNum;
 	private ArrayList<String> lines;
 	private String content;
 	private String name;
-	private String[] words;
+	private ArrayList<Word> words;
 	
 
 	public TextFile() {
 		lines = new ArrayList<String>();
+		words = new ArrayList<Word>();
 	}
 	
 	public void setLines(ArrayList<String> lines) {
@@ -23,22 +26,35 @@ public class TextFile {
 		for (int i = 1; i < lines.size(); i++) {
 			content = content + " " + lines.get(i).trim();
 		}
-
-		content.replace(",", "");
-		content.replace(".", "");
-		content.replace("!", "");
-		content.replace("?", "");
-		content.replace("(", "");
-		content.replace(")", "");
 		
-		words = content.split(" ");
-	}
-	public String getContent() {
-		return content;
+		String[] words = content.split(" ");
+		
+		for (int i = 0; i < words.length; i++) {
+			String w = words[i];
+			int index = wordExists(w);
+			if(index == -1) {
+				Word word = new Word();
+				word.setWord(w);
+				this.words.add(word);
+			} else {
+				this.words.get(index).increment();
+			}
+		}
 	}
 	
-	public String[] getWords() {
-		return words;
+	private int wordExists(String word) {
+		for (int i = 0; i < words.size(); i++) {
+			Word w = words.get(i);
+			if(w.getWord().trim().equals(word.trim())) {
+				return i;
+			}
+		}
+		
+		return -1;
+	}
+	
+	public String getContent() {
+		return content;
 	}
 	
 	public void setName(String name) {
@@ -56,11 +72,9 @@ public class TextFile {
 	public void setFileNum(int fileNum) {
 		this.fileNum = fileNum;
 	}
-	
-	public void print() {
-		System.out.println(name);
-		for (int i = 0; i < lines.size(); i++) {
-			System.out.println(lines.get(i));
-		}
+
+	public ArrayList<Word> getWords() {
+		// TODO Auto-generated method stub
+		return words;
 	}
 }

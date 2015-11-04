@@ -19,7 +19,7 @@ public class DBConnector {
 		url = "jdbc:mysql://127.0.0.1:3306/";
 		database = "informationretrieval";
 		username = "root";
-		passwordDB = "";
+		passwordDB = "password";
 	}
 
 	public static DBConnector getInstance() {
