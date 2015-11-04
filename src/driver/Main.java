@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Scanner;
 
+import model.Document;
 import model.Stemmer;
 import reader.DBModel;
 import reader.TextFile;
@@ -167,14 +168,17 @@ public class Main {
             }
             outputExclusions += word + " ";
         }
-        //System.out.println("Output Exclusions " + outputExclusions);
+        System.out.println("Output Inclusions " + outputTerms);
+
+        System.out.println("Output Exclusions " + outputExclusions);
         
-        Iterator<String> files = db.searchDocs(outputTerms, outputExclusions);
+        Iterator<Document> files = db.searchDocs(outputTerms, outputExclusions);
         System.out.println("\n\nFiles from query: ");
         while(files.hasNext())
         {
-        	String fileName = files.next();
-        	System.out.println(fileName);
+        	Document file = files.next();
+        	System.out.println("DocID: " + file.getdocID());
+        	System.out.println("DocName: " + file.getdocName());
         }
     }
 }

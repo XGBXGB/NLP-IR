@@ -7,6 +7,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Iterator;
 
+import model.Document;
+
 public class DBModel {
 
     private PreparedStatement ps;
@@ -139,10 +141,11 @@ public class DBModel {
     //Gives the filenames that contain the set of search terms
     public Iterator searchDocs(String terms, String exclusions) {
         
-        ArrayList<String> fileNames = new ArrayList();
-        String[] words = terms.split(" ");
+       // ArrayList<String> fileNames = new ArrayList();
+        ArrayList<Document> docs = new ArrayList<Document>();
+    	String[] words = terms.split(" ");
         String[] excludedWords = exclusions.split(" ");
-        String query = "SELECT fileName FROM files WHERE fileId IN ";
+        String query = "SELECT * FROM files WHERE fileId IN ";
         query += "(Select wf.fileId FROM words w, wordsFiles wf "
                 + "WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId)\n";
 
@@ -166,11 +169,12 @@ public class DBModel {
             ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
-                fileNames.add(rs.getString("fileName"));
+                //fileNames.add(rs.getString("fileName"));
+            	docs.add(new Document(rs.getInt("fileId"), rs.getString("fileName")));
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return fileNames.iterator();
+        return docs.iterator();
     }
 }
