@@ -50,6 +50,7 @@ DROP TABLE IF EXISTS `words`;
 CREATE TABLE `words` (
   `wordId` int(11) NOT NULL AUTO_INCREMENT,
   `word` varchar(45) NOT NULL,
+  `inverseDocFreq` double NOT NULL DEFAULT '1',
   PRIMARY KEY (`wordId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -73,9 +74,7 @@ DROP TABLE IF EXISTS `wordsfiles`;
 CREATE TABLE `wordsfiles` (
   `wordId` int(11) NOT NULL,
   `fileId` int(11) NOT NULL,
-  `wordCount` int(11) NOT NULL DEFAULT '1',
-  `termFreq` int(11) NOT NULL DEFAULT '1',
-  `inverseDocFreq` int(11) NOT NULL DEFAULT '1',
+  `termFreq` double NOT NULL DEFAULT '1',
   KEY `wf wordId_idx` (`wordId`),
   KEY `wf fileId_idx` (`fileId`),
   CONSTRAINT `wf fileId` FOREIGN KEY (`fileId`) REFERENCES `files` (`fileId`) ON DELETE NO ACTION ON UPDATE NO ACTION,

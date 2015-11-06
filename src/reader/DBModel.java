@@ -40,32 +40,20 @@ public class DBModel {
     }
     
     //Returns true if wordid and fileid is already in wordfiles table
-    public boolean checkWordFiles(String word) {
+    public boolean checkWordFiles(String word, String fileName) {
         String query;
-        if (!wordExist(word)) {
             try {
-                query = "SELECT wordId FROM words WHERE word = \""+word+"\";";
+                query = "SELECT * FROM wordsfiles WHERE wordId = (SELECT wordId FROM words WHERE word = ?)  AND fileId = (SELECT fileId FROM files WHERE fileName = ?)";
                 ps = connection.prepareStatement(query);
+                ps.setString(1, word);
+                ps.setString(2, fileName);
+                
                 ResultSet rs = ps.executeQuery();
-                rs.next();
-                int wordId = rs.getInt(1);
-                
-                query = "SELECT MAX(fileId) FROM files";
-                ps = connection.prepareStatement(query);
-                rs = ps.executeQuery();
-                rs.next();
-                int fileId = rs.getInt(1);
-                
-                
-                query = "SELECT * FROM wordsfiles WHERE wordId = \""+wordId+"\" "
-                        + "AND fileId = \""+fileId+"\"";
-                ps = connection.prepareStatement(query);
-                rs = ps.executeQuery();
-                return rs.next();
+                if(rs.next())
+                    return true;
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }
         return false;
     }
 
@@ -84,9 +72,10 @@ public class DBModel {
         return 0;
     }
 
-    public void insertWordFile(String word, int count, int tf, int idf) {
+    public void insertWordFile(String word, double tf, String fileName) {
         String subQuery;
-        String query = "INSERT INTO wordsfiles (wordId, fileId, wordCount, termFreq, inverseDocFreq) VALUES (?, ?, ?, ?, ?)";
+        
+        String query = "INSERT INTO wordsfiles (wordId, fileId, termFreq) VALUES (?, ?, ?)";
         try {
             subQuery = "SELECT wordId FROM words WHERE word = \""+word+"\";";
             ps = connection.prepareStatement(subQuery);
@@ -94,18 +83,15 @@ public class DBModel {
             wID.next();
             int wordId = wID.getInt(1);
             
-            subQuery = "SELECT MAX(fileId) FROM files;";
+            subQuery = "SELECT fileId FROM files WHERE fileName = \""+fileName+"\"";
             ps = connection.prepareStatement(subQuery);
             ResultSet fID = ps.executeQuery();
             fID.next();
             int fileId = fID.getInt(1);
-            
             ps = connection.prepareStatement(query);
             ps.setInt(1, wordId);
             ps.setInt(2, fileId);
-            ps.setInt(3, count);
-            ps.setInt(4, tf);
-            ps.setInt(5, idf);
+            ps.setDouble(3, tf);
             ps.execute();
         } catch (SQLException e) {
             e.printStackTrace();
@@ -141,11 +127,10 @@ public class DBModel {
         } 
     }
     
-    public int getNumOfDocs(String word){
-        String query = "SELECT COUNT(*) FROM wordsFiles wf, words w WHERE w.word = \""+word+"\" AND wf.wordId = w.wordId";
+    public int getNumOfDocsOfWord(int id){
+        String query = "SELECT COUNT(*) FROM wordsFiles WHERE wordId = "+id;
         try {
             ps = connection.prepareStatement(query);
-            ps.setString(1, word);
             ResultSet rs = ps.executeQuery();
             if (rs.next()) {
                 return rs.getInt(1);
@@ -155,6 +140,44 @@ public class DBModel {
             e.printStackTrace();
         } 
         return 0;
+    }
+    
+    public int getNumOfDocs(){
+        String query = "SELECT COUNT(*) FROM files";
+        try {
+            ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+        return 0;
+    }
+    
+    public void updateIDF(){
+        String query = "SELECT wordId FROM words ";
+        final int numOfDocs = getNumOfDocs();
+        double idf;
+        try {
+            ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                System.out.println("wordId: "+rs.getInt("wordId"));
+                System.out.println("numOfDocs: "+numOfDocs);
+                System.out.println("numOfDocsOfWord: "+getNumOfDocsOfWord(rs.getInt("wordId")));
+                idf = (Math.log((double)numOfDocs/(double)getNumOfDocsOfWord(rs.getInt("wordId"))));
+                System.out.println("Resulting idf: "+idf);
+                query = "UPDATE words SET inverseDocFreq = "+idf+" WHERE wordId = "+rs.getInt("wordId");
+                ps = connection.prepareStatement(query);
+                ps.execute();
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
     }
 
     //Gives the filenames that contain the set of search terms

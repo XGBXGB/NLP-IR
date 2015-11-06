@@ -13,7 +13,7 @@ public class TextFileReader {
 		ArrayList<String> fWords = new ArrayList<String>();
 		
 		try {
-			FileReader fr = new FileReader("C:\\Users\\Jake\\Desktop\\NLP\\fil-function-words.txt");
+			FileReader fr = new FileReader("..\\NLP-IR\\FW\\fil-function-words.txt");
 			BufferedReader br = new BufferedReader(fr);
 			String word = null;
 			while((word = br.readLine()) != null) {
@@ -34,11 +34,13 @@ public class TextFileReader {
 		File files[] = folder.listFiles();
 		
 		for (int i = 0; i < files.length; i++) {
+                    System.out.println("WOOOOOO: "+(i+1));
 			File file = files[i];
 			if(file.getName().endsWith(".txt")) {
 				TextFile textFile = new TextFile();
 				textFile.setFileNum(i + 1);
 				textFile.setName(file.getName());
+                                System.out.println("INSERTED FILE: "+file.getName());
 				textFile.setLines(readFile(file.getPath()));
 				textFiles.add(textFile);
 			}

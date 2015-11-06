@@ -35,7 +35,7 @@ public class Controller {
 	}
 
 	public void retrieveFiles() {
-		files = tfr.readFolder("C:\\Users\\Jake\\Desktop\\NLP\\filipino texts");
+		files = tfr.readFolder("..\\NLP-IR\\IR");
 	}
 
 	private boolean isFunctionWord(String word) {
@@ -50,7 +50,7 @@ public class Controller {
 	private String removePunc(String word) {
 		word.replaceAll("\\(", "");
 		word.replaceAll("\\)", "");
-		return word.replaceAll("[?!.,;:-`~!@#$%^&*_=+]", "");
+		return word.replaceAll("[?!.,;:-`~!@#$%^&*_=+\"']", "");
 	}
 	
 	private boolean isVowel(char c) {
@@ -157,10 +157,10 @@ public class Controller {
 					w.setWord(word);
 					if(!isFunctionWord(word)) {
 						dbModel.insertWord(word);
-						if (!dbModel.checkWordFiles(word)) {
-							int tf = (int)(1 + Math.log((double)w.getCount()));
-							int idf = (int) (Math.log(NUMBER_OF_DOCUMENTS/dbModel.getNumOfDocs(w.getWord())));
-							dbModel.insertWordFile(word, w.getCount(), tf, idf);
+						if (!dbModel.checkWordFiles(word, file.getName())) {
+							double tf = 1 + Math.log((double)w.getCount());
+							dbModel.insertWordFile(word, tf, file.getName());
+                                                        //int idf = (int) (Math.log(NUMBER_OF_DOCUMENTS/dbModel.getNumOfDocs(w.getWord())));
 						}
 					}
 					// int wordId = db.getLastInsertedId();
@@ -168,7 +168,7 @@ public class Controller {
 					// System.out.print(word + " ");
 				}
 			}
-			// System.out.println();
 		}
+                dbModel.updateIDF();
 	}
 }
