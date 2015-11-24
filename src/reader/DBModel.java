@@ -179,6 +179,24 @@ public class DBModel {
             e.printStackTrace();
         } 
     }
+    
+    public void updateScore(){
+        String query = "SELECT * FROM wordsfiles ";
+        try {
+            ps = connection.prepareStatement(query);
+            ResultSet rs = ps.executeQuery();
+            String score;
+            while (rs.next()) {
+                score = "(SELECT inverseDocFreq FROM words WHERE wordId = "+rs.getInt("wordId")+")*"+rs.getDouble("termFreq");
+                query = "UPDATE wordsfiles SET score = "+score+" WHERE wordId = "+rs.getInt("wordId")+" AND fileId = "+rs.getInt("fileId");
+                ps = connection.prepareStatement(query);
+                ps.execute();
+            }
+        } catch (SQLException e) {
+            // TODO Auto-generated catch block
+            e.printStackTrace();
+        } 
+    }
 
     //Gives the filenames that contain the set of search terms
     public Iterator searchDocs(String terms, String exclusions) {
@@ -189,7 +207,7 @@ public class DBModel {
         String[] excludedWords = exclusions.split(" ");
         String query = "SELECT * FROM files WHERE fileId IN ";
         query += "(Select wf.fileId FROM words w, wordsFiles wf "
-                + "WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId)\n";
+                + "WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId ORDER BY score DESC)\n";
 
         if (words.length > 1) {
             for (int i = 1; i < words.length; i++) {
