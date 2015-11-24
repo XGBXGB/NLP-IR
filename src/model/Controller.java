@@ -35,7 +35,7 @@ public class Controller {
 	}
 
 	public void retrieveFiles() {
-		files = tfr.readFolder("..\\NLP-IR\\IR");
+		files = tfr.readFolder("..\\NLP-IRPT2-2\\IR");
 	}
 
 	private boolean isFunctionWord(String word) {
@@ -78,7 +78,7 @@ public class Controller {
 		boolean canBeProper = false;
 		boolean isProper = false;
 
-		for (int i = 0; i < files.size(); i++) {
+		/*for (int i = 0; i < files.size(); i++) {
 			System.out.println((i+1)/303.0000 * 100 + "%");
 			TextFile file = files.get(i);
 			dbModel.insertFile(file.getName());
@@ -169,6 +169,7 @@ public class Controller {
 				}
 			}
 		}
-                dbModel.updateIDF();
+        dbModel.updateIDF();*/
+		dbModel.updateScore();
 	}
 }

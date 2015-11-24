@@ -179,6 +179,7 @@ public class Main {
         	Document file = files.next();
         	System.out.println("DocID: " + file.getdocID());
         	System.out.println("DocName: " + file.getdocName());
+        	System.out.println("Score: " + file.getScore());
         }
     }
 }

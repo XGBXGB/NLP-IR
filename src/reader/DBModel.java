@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Iterator;
 
 import model.Document;
@@ -207,7 +208,7 @@ public class DBModel {
         String[] excludedWords = exclusions.split(" ");
         String query = "SELECT * FROM files WHERE fileId IN ";
         query += "(Select wf.fileId FROM words w, wordsFiles wf "
-                + "WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId ORDER BY score DESC)\n";
+                + "WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId)\n";
 
         if (words.length > 1) {
             for (int i = 1; i < words.length; i++) {
@@ -217,24 +218,125 @@ public class DBModel {
         }
         
         if (excludedWords.length >= 1) {
-        	System.out.println("Went in excluded");
             for (int i = 0; i < excludedWords.length; i++) {
                 query += "AND fileId NOT IN (Select wf.fileId FROM words w, wordsFiles wf "
                         + "WHERE w.word = \"" + excludedWords[i] + "\" AND w.wordId = wf.wordId);";
 
             }
         }
+                
+       /*String query = "SELECT f.fileID, f.fileName, wf.score from files f, wordsfiles wf WHERE f.fileID IN ";
+        query += "(Select wf.fileId FROM words w, wordsFiles wf WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId)\n";
+        query += "AND wf.fileID = f.fileID AND wf.wordID =(SELECT wordID from words where word = \"" + words[0] + "\")";
+        
+        if (words.length > 1) {
+            for (int i = 1; i < words.length; i++) {
+                query += "AND f.fileId IN (Select wf.fileId FROM words w, wordsFiles wf "
+                        + "WHERE w.word = \"" + words[i] + "\" AND w.wordId = wf.wordId) ";
+                query += "AND wf.fileID = f.fileID AND wf.wordID =(SELECT wordID from words where word = \"" + words[i] + "\");";
+                
+            }
+        }
+        
+        if (excludedWords.length >= 1) {
+            for (int i = 0; i < excludedWords.length; i++) {
+                query += "AND f.fileId NOT IN (Select wf.fileId FROM words w, wordsFiles wf "
+                        + "WHERE w.word = \"" + excludedWords[i] + "\" AND w.wordId = wf.wordId);";
+
+            }
+        }
+        
+        query += "order by score desc;";*/
         
         try {
             ps = connection.prepareStatement(query);
             ResultSet rs = ps.executeQuery();
             while (rs.next()) {
                 //fileNames.add(rs.getString("fileName"));
+            	
+            	String q = "SELECT SUM(score) From wordsfiles WHERE (wordId = (SELECT wordId from words where word=\""+ words[0] + "\")) ";
+            	q += " AND fileID = " + rs.getInt("fileId");
+
+            	for(int i = 1; i < words.length; i++)
+            	{
+            		q += " or (wordId = (SELECT wordId from words where word = \"" + words[i] + "\"))";
+                	q += " AND fileID = " + rs.getInt("fileId");
+
+            	}
+            	q += ";";
             	docs.add(new Document(rs.getInt("fileId"), rs.getString("fileName")));
+            	PreparedStatement p = connection.prepareStatement(q);
+            	ResultSet res = p.executeQuery();
+            	while(res.next()){
+            	docs.get(docs.size()-1).setScore(res.getDouble(1));
+            	}
+            	
+            	
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return docs.iterator();
+        
+
+        return sortDocuments(docs);
+    }
+    
+    
+    Iterator<Document> sortDocuments(ArrayList<Document> docs)
+    {
+    	ArrayList<Double> scores = new ArrayList<Double>();
+    	ArrayList<Document> dc = new ArrayList<Document>();
+    	for(int x = 0; x < docs.size(); x++)
+    		scores.add(docs.get(x).getScore());
+    	
+    	Collections.sort(scores);
+    	
+    	boolean checker = true;
+    	for(int index = scores.size()-1; index >=0; index--)
+    	{
+    		
+    			for(int x = docs.size()-1; x >=0; x--)
+    			{
+    	    		if(checker && docs.get(x).getScore() == scores.get(index))
+    	    		{
+    	    			dc.add(docs.get(x));
+    	    			docs.remove(docs.get(x));
+    	    			checker = false;
+    	    		}
+    			}
+    			checker = true;
+    	}
+    	
+    	return dc.iterator();
+    	/*ArrayList<Document> dc = new ArrayList<Document>();
+    	
+    	
+    	dc.add(docs.get(0));
+    	for(int x = 1; x < docs.size(); x++)
+    	{
+    		if(docs.get(x).getScore() < dc.get(dc.size()-1).getScore())
+    		{
+        		System.out.println("wanton2 " + dc.get(0).getdocName());
+    			dc.add(docs.get(x));
+    		}
+    		else
+    		{
+        		System.out.println("wanton3 " + dc.get(0).getdocName());
+    			for(int y = 0; y < dc.size(); y++)
+    				if(dc.get(y).getScore() < docs.get(x).getScore())
+    				{
+    		    		System.out.println("wanton4 " + dc.get(0).getdocName());
+    					dc.add(dc.get(dc.size()-1));
+    					for(int z = dc.size()-1; z > 0; z--)
+    					{
+    						dc.set(z, dc.get(z-1));
+    					}
+    					dc.set(0, docs.get(x));
+    				}
+    		}
+    		
+    		System.out.println("wanton " + dc.get(x).getdocName());
+    	}
+    	return dc.iterator();*/
     }
 }
