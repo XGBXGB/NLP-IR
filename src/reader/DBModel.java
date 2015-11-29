@@ -213,17 +213,18 @@ public class DBModel {
         if (words.length > 1) {
             for (int i = 1; i < words.length; i++) {
                 query += "AND fileId IN (Select wf.fileId FROM words w, wordsFiles wf "
-                        + "WHERE w.word = \"" + words[i] + "\" AND w.wordId = wf.wordId);";
+                        + "WHERE w.word = \"" + words[i] + "\" AND w.wordId = wf.wordId)";
             }
         }
         
         if (excludedWords.length >= 1) {
             for (int i = 0; i < excludedWords.length; i++) {
                 query += "AND fileId NOT IN (Select wf.fileId FROM words w, wordsFiles wf "
-                        + "WHERE w.word = \"" + excludedWords[i] + "\" AND w.wordId = wf.wordId);";
+                        + "WHERE w.word = \"" + excludedWords[i] + "\" AND w.wordId = wf.wordId)";
 
             }
         }
+        query+=";";
                 
        /*String query = "SELECT f.fileID, f.fileName, wf.score from files f, wordsfiles wf WHERE f.fileID IN ";
         query += "(Select wf.fileId FROM words w, wordsFiles wf WHERE w.word = \"" + words[0] + "\" AND w.wordId = wf.wordId)\n";
@@ -256,6 +257,10 @@ public class DBModel {
             	
             	String q = "SELECT SUM(score) From wordsfiles WHERE (wordId = (SELECT wordId from words where word=\""+ words[0] + "\")) ";
             	q += " AND fileID = " + rs.getInt("fileId");
+                
+//                For weighted term freq
+//                String q = "SELECT SUM(termFreq) From wordsfiles WHERE (wordId = (SELECT wordId from words where word=\""+ words[0] + "\")) ";
+//            	q += " AND fileID = " + rs.getInt("fileId");
 
             	for(int i = 1; i < words.length; i++)
             	{
