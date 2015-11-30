@@ -92,13 +92,14 @@ public class Controller {
             for (Word w : words) {
                 String word = w.getWord();
                 if (!isFunctionWord(word)) {
+                    word = word.toLowerCase();
                     if (isStemmable(removePunc(word))) {
                         word = removePunc(word);
                         try {
                             // current word is a proper noun if the previous word
                             // ended with a punctuation mark,
                             // and the first character is in uppercase
-                            word = word.toLowerCase();
+                            
                             word = Stemmer.removeInfix(word);
                             word = Stemmer.removePartialReduplicates12(word);
                             word = Stemmer.removePartialReduplicates3(word);

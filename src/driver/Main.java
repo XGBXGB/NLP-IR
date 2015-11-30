@@ -90,10 +90,11 @@ public class Main {
 
         for (String word : arrayTerms) {
             if (!isFunctionWord(word)) {
+                word = word.toLowerCase();
                 if (isStemmable(removePunc(word))) {
                     try {
 
-                        word = word.toLowerCase();
+                        
                         word = Stemmer.removeInfix(word);
                         word = Stemmer.removePartialReduplicates12(word);
                         word = Stemmer.removePartialReduplicates3(word);
@@ -133,9 +134,9 @@ public class Main {
 
         for (String word : arrayExclusions) {
             if (!isFunctionWord(word)) {
+                word = word.toLowerCase();
                 if (isStemmable(removePunc(word))) {
                     try {
-                        word = word.toLowerCase();
                         word = Stemmer.removeInfix(word);
                         word = Stemmer.removePartialReduplicates12(word);
                         word = Stemmer.removePartialReduplicates3(word);
