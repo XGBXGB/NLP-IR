@@ -153,7 +153,7 @@ public class Controller {
 //						canBeProper = !Stemmer.endsWithPunctuation(word);
                     } catch (Exception e) {
                     }
-
+                    word = removePunc(word);
 					// System.out.println(word);
                     // output += word + " ";
                     w.setWord(word);
@@ -168,6 +168,17 @@ public class Controller {
 					// int wordId = db.getLastInsertedId();
 
                     // System.out.print(word + " ");
+                } else {
+                    word = removePunc(word);
+                    w.setWord(word);
+                	if (!isFunctionWord(word)) {
+                        dbModel.insertWord(word);
+                        if (!dbModel.checkWordFiles(word, file.getName())) {
+                            double tf = 1 + Math.log((double) w.getCount());
+                            dbModel.insertWordFile(word, tf, file.getName());
+                            //int idf = (int) (Math.log(NUMBER_OF_DOCUMENTS/dbModel.getNumOfDocs(w.getWord())));
+                        }
+                    }
                 }
             }
         }
