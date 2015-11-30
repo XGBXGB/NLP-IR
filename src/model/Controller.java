@@ -75,7 +75,7 @@ public class Controller {
     }
 
     public void insertEverything() {
-		// gawa kayo ng folder sa desktop maybe and put filipino texts and
+        // gawa kayo ng folder sa desktop maybe and put filipino texts and
         // function words
         boolean canBeProper = false;
         boolean isProper = false;
@@ -91,92 +91,49 @@ public class Controller {
 
             for (Word w : words) {
                 String word = w.getWord();
-                if (isStemmable(removePunc(word))) {
-                    word = removePunc(word);
-                    try {
-						// current word is a proper noun if the previous word
-                        // ended with a punctuation mark,
-                        // and the first character is in uppercase
-                        word = word.toLowerCase();
-
-//						if (!isProper) {
-                        word = Stemmer.removeInfix(word);
-                        // System.out.println("After infix: " + word);
-                        word = Stemmer.removePartialReduplicates12(word);
-                        // System.out.println("After red12: " + word);
-                        word = Stemmer.removePartialReduplicates3(word);
-                        // System.out.println("After red3: " + word);
-                        word = Stemmer.removePartialReduplicates4(word);
-                        // System.out.println("After red4: " + word);
-                        word = Stemmer.removeFullReduplicates(word);
-                        // System.out.println("After full: " + word);
-
-                        word = Stemmer.removePrefixes(word);
-                        // System.out.println("After prefix: " + word);
-
-                        word = Stemmer.removePartialReduplicates12(word);
-                        // System.out.println("After red12: " + word);
-                        word = Stemmer.removePartialReduplicates3(word);
-                        // System.out.println("After red3: " + word);
-                        word = Stemmer.removePartialReduplicates4(word);
-                        // System.out.println("After red4: " + word);
-                        word = Stemmer.removeFullReduplicates(word);
-							// System.out.println("After full: " + word);
-
-                        // System.out.println("before suffix: "+word);
-                        word = Stemmer.removeSuffix(word);
-							// System.out.println("after suffix: "+word);
-                        // System.out.println("After suffix: " + word);
-
-                        word = Stemmer.removePartialReduplicates12(word);
-                        // System.out.println("After red12: " + word);
-                        word = Stemmer.removePartialReduplicates3(word);
-                        // System.out.println("After red3: " + word);
-                        word = Stemmer.removePartialReduplicates4(word);
-                        // System.out.println("After red4: " + word);
-                        word = Stemmer.removeFullReduplicates(word);
-                        // System.out.println("After full: " + word);
-
-                        word = Stemmer.removePrefixes(word);
-                        // System.out.println("After prefixes: " + word);
-
-                        word = Stemmer.removePartialReduplicates12(word);
-                        // System.out.println("After red12: " + word);
-                        word = Stemmer.removePartialReduplicates3(word);
-                        // System.out.println("After red3: " + word);
-                        word = Stemmer.removePartialReduplicates4(word);
-                        // System.out.println("After red4: " + word);
-                        word = Stemmer.removeFullReduplicates(word);
-							// System.out.println("After full: " + word);
-                        // if word didn't end with punctuation then true;
-//						}
-//						canBeProper = !Stemmer.endsWithPunctuation(word);
-                    } catch (Exception e) {
-                    }
-                    word = removePunc(word);
-					// System.out.println(word);
-                    // output += word + " ";
-                    w.setWord(word);
-                    if (!isFunctionWord(word)) {
-                        dbModel.insertWord(word);
-                        if (!dbModel.checkWordFiles(word, file.getName())) {
-                            double tf = 1 + Math.log((double) w.getCount());
-                            dbModel.insertWordFile(word, tf, file.getName());
-                            //int idf = (int) (Math.log(NUMBER_OF_DOCUMENTS/dbModel.getNumOfDocs(w.getWord())));
+                if (!isFunctionWord(word)) {
+                    if (isStemmable(removePunc(word))) {
+                        word = removePunc(word);
+                        try {
+                            // current word is a proper noun if the previous word
+                            // ended with a punctuation mark,
+                            // and the first character is in uppercase
+                            word = word.toLowerCase();
+                            word = Stemmer.removeInfix(word);
+                            word = Stemmer.removePartialReduplicates12(word);
+                            word = Stemmer.removePartialReduplicates3(word);
+                            word = Stemmer.removePartialReduplicates4(word);
+                            word = Stemmer.removeFullReduplicates(word);
+                            word = Stemmer.removePrefixes(word);
+                            word = Stemmer.removePartialReduplicates12(word);
+                            word = Stemmer.removePartialReduplicates3(word);
+                            word = Stemmer.removePartialReduplicates4(word);
+                            word = Stemmer.removeFullReduplicates(word);
+                            word = Stemmer.removeSuffix(word);
+                            word = Stemmer.removePartialReduplicates12(word);
+                            word = Stemmer.removePartialReduplicates3(word);
+                            word = Stemmer.removePartialReduplicates4(word);
+                            word = Stemmer.removeFullReduplicates(word);
+                            word = Stemmer.removePrefixes(word);
+                            word = Stemmer.removePartialReduplicates12(word);
+                            word = Stemmer.removePartialReduplicates3(word);
+                            word = Stemmer.removePartialReduplicates4(word);
+                            word = Stemmer.removeFullReduplicates(word);
+                        } catch (Exception e) {
                         }
-                    }
-					// int wordId = db.getLastInsertedId();
-
-                    // System.out.print(word + " ");
-                } else {
-                    word = removePunc(word);
-                    w.setWord(word);
-                	if (!isFunctionWord(word)) {
+                        w.setWord(word);
                         dbModel.insertWord(word);
                         if (!dbModel.checkWordFiles(word, file.getName())) {
                             double tf = 1 + Math.log((double) w.getCount());
                             dbModel.insertWordFile(word, tf, file.getName());
-                            //int idf = (int) (Math.log(NUMBER_OF_DOCUMENTS/dbModel.getNumOfDocs(w.getWord())));
+                        }
+                    } else {
+                        word = removePunc(word);
+                        w.setWord(word);
+                        dbModel.insertWord(word);
+                        if (!dbModel.checkWordFiles(word, file.getName())) {
+                            double tf = 1 + Math.log((double) w.getCount());
+                            dbModel.insertWordFile(word, tf, file.getName());
                         }
                     }
                 }
